@@ -533,7 +533,7 @@
       <div class="wrap">
         <div class="calc-head">
           <h2>Kalkulator Teknik Kimia</h2>
-          <p>Tujuh kalkulator buat nemenin ngerjain tugas, laporan, dan hitungan cepat di lapangan — termasuk Line Sizing &amp; ΔP dari prototype Hydraulic Line Sizing. Tinggal isi, klik hitung, hasilnya langsung keluar — lengkap sama rumus yang dipakai.</p>
+          <p>Sembilan kalkulator buat nemenin ngerjain tugas, laporan, dan hitungan cepat di lapangan — termasuk Line Sizing &amp; ΔP, Flare KO Drum, dan Separator Vertikal dari file perhitungan proyek. Tinggal isi, klik hitung, hasilnya langsung keluar — lengkap sama rumus yang dipakai.</p>
         </div>
         <div class="calc-nav" role="tablist" aria-label="Pilih kalkulator">
           <button class="calc-chip active" type="button" data-calc="konversi">Konversi Satuan</button>
@@ -543,6 +543,8 @@
           <button class="calc-chip" type="button" data-calc="lmtd">LMTD &amp; Duty</button>
           <button class="calc-chip" type="button" data-calc="neraca">Neraca Mol–Massa</button>
           <button class="calc-chip" type="button" data-calc="linesizing">Line Sizing &amp; ΔP</button>
+          <button class="calc-chip" type="button" data-calc="flareko">Flare KO Drum</button>
+          <button class="calc-chip" type="button" data-calc="vertsep">Separator Vertikal</button>
         </div>
 
         <!-- 1. Konversi Satuan -->
@@ -973,6 +975,317 @@
           </div>
           <p class="note">Sumber: sheet “Hydraulic Line Sizing Prototype” + tabel pipa ASME B36.10M + konstanta fitting Darby 3-K (Darby, Chemical Engineering Fluid Mechanics, 2nd ed.) dari file Hydraulic_and_Line_Sizing_Calculator.xlsm. Hanya untuk cairan single-phase inkompresibel. Hasil untuk belajar / estimasi awal — bukan untuk desain pabrik atau keputusan keselamatan.</p>
         </article>
+        <!-- 8. Flare KO Drum (Horizontal) -->
+        <article class="calc-panel" id="panel-flareko" hidden>
+          <h3>Flare KO Drum (Horizontal)</h3>
+          <span class="calc-formula">Uv,max = K · DF · √((ρL − ρV) / ρV) &nbsp;·&nbsp; Vt droplet (Stokes / Intermediate / Newton) &nbsp;·&nbsp; Uv ≤ Vt · Leff / (D − HHLL)</span>
+          <p class="calc-desc">Sizing bejana horizontal pemisah uap–cairan di sistem flare (knock-out drum), basis GPSA Engineering Data Book 14th Ed. Sec. 7: Souders–Brown untuk luas uap minimum di HHLL, plus kriteria settling droplet (kecepatan terminal Vt × panjang efektif). Mode DESIGN mencari diameter terkecil (kelipatan 50 mm, 300–3000 mm) yang lolos kedua kriteria pada target L/D; mode RATING mengecek diameter dan panjang yang sudah ada. Nilai awal di bawah ini adalah contoh yang sudah terverifikasi di file perhitungan: D = 650 mm, L = 1950 mm, L/D = 3,0.</p>
+          <div class="calc-grid">
+            <div class="field">
+              <label for="ko-p">Tekanan operasi kPa(g)</label>
+              <input id="ko-p" type="number" step="any" value="901.108" />
+            </div>
+            <div class="field">
+              <label for="ko-mv">Laju massa uap (ṁv) kg/jam</label>
+              <input id="ko-mv" type="number" step="any" value="1481" />
+            </div>
+            <div class="field">
+              <label for="ko-rhov">Densitas uap (ρv) kg/m³</label>
+              <input id="ko-rhov" type="number" step="any" value="7.664" />
+            </div>
+            <div class="field">
+              <label for="ko-ml">Laju massa cairan (ṁL) kg/jam</label>
+              <input id="ko-ml" type="number" step="any" value="0.321" />
+            </div>
+            <div class="field">
+              <label for="ko-rhol">Densitas cairan (ρL) kg/m³</label>
+              <input id="ko-rhol" type="number" step="any" value="963" />
+            </div>
+            <div class="field">
+              <label for="ko-mu">Viskositas (μ) cP <span class="hint">dipakai untuk Vt droplet — lihat catatan di bawah</span></label>
+              <input id="ko-mu" type="number" step="any" value="0.23" />
+            </div>
+            <div class="field">
+              <label for="ko-mode">Mode perhitungan</label>
+              <select id="ko-mode">
+                <option value="DESIGN" selected>DESIGN — cari diameter terkecil</option>
+                <option value="RATING">RATING — cek ukuran yang ada</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="ko-ld">Target L/D (DESIGN)</label>
+              <input id="ko-ld" type="number" step="any" value="3" />
+            </div>
+            <div class="field">
+              <label for="ko-drate">RATING: diameter dalam (D) mm <span class="hint">dipakai saat mode RATING</span></label>
+              <input id="ko-drate" type="number" step="any" value="600" />
+            </div>
+            <div class="field">
+              <label for="ko-lrate">RATING: panjang T/T (L) mm <span class="hint">dipakai saat mode RATING</span></label>
+              <input id="ko-lrate" type="number" step="any" value="1800" />
+            </div>
+            <div class="field">
+              <label for="ko-hhll">HHLL — level cairan tertinggi mm</label>
+              <input id="ko-hhll" type="number" step="any" value="500" />
+            </div>
+            <div class="field">
+              <label for="ko-kmethod">Metode faktor K</label>
+              <select id="ko-kmethod">
+                <option value="york" selected>York</option>
+                <option value="gpsa">GPSA</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="ko-demister">Demister terpasang?</label>
+              <select id="ko-demister">
+                <option value="YES" selected>YA</option>
+                <option value="NO">TIDAK (K × 0,5)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="ko-df">Faktor derating (DF)</label>
+              <input id="ko-df" type="number" step="any" value="0.9" />
+            </div>
+            <div class="field">
+              <label for="ko-dp">Diameter droplet (dp) mikron</label>
+              <input id="ko-dp" type="number" step="any" value="150" />
+            </div>
+            <div class="field">
+              <label for="ko-head">Tipe head</label>
+              <select id="ko-head">
+                <option value="ellip" selected>Ellipsoidal 2:1</option>
+                <option value="hemi">Hemispherical</option>
+                <option value="flat">Flat</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="ko-incl">Jarak CL nozzle inlet ke T/T mm</label>
+              <input id="ko-incl" type="number" step="any" value="203.2" />
+            </div>
+            <div class="field">
+              <label for="ko-outcl">Jarak CL nozzle outlet ke T/T mm</label>
+              <input id="ko-outcl" type="number" step="any" value="50.8" />
+            </div>
+            <div class="field">
+              <label for="ko-indev">Inlet device</label>
+              <select id="ko-indev">
+                <option value="halfopen" selected>Half-Open Pipe (batas 2250)</option>
+                <option value="other">Lainnya (batas 1500)</option>
+              </select>
+            </div>
+          </div>
+          <h3 style="font-size:1.35rem;margin-top:34px;">Nozzle — ND yang dipakai</h3>
+          <p class="calc-desc">ND dianggap sama dengan ID (tebal dinding diabaikan, seperti di file). Batas momentum: inlet 1500 kg/m·s² (2250 untuk half-open pipe), vapour outlet 3750 kg/m·s²; liquid outlet dibatasi kecepatan 1 m/s.</p>
+          <div class="calc-grid">
+            <div class="field">
+              <label for="ko-nd-in">Inlet — ND inch</label>
+              <input id="ko-nd-in" type="number" step="any" value="16" />
+            </div>
+            <div class="field">
+              <label for="ko-nd-v">Vapour outlet — ND inch</label>
+              <input id="ko-nd-v" type="number" step="any" value="8" />
+            </div>
+            <div class="field">
+              <label for="ko-nd-l">Liquid outlet — ND inch</label>
+              <input id="ko-nd-l" type="number" step="any" value="2" />
+            </div>
+          </div>
+          <h3 style="font-size:1.35rem;margin-top:34px;">Level instrumen &amp; waktu tinggal</h3>
+          <p class="calc-desc">Ketinggian level diukur dari BOV (bottom of vessel). Volume cairan = segmen silinder (panjang T/T) + kedua head. Waktu tinggal = volume kontrol antar level ÷ laju cairan.</p>
+          <div class="calc-grid">
+            <div class="field">
+              <label for="ko-hll">HLL mm</label>
+              <input id="ko-hll" type="number" step="any" value="400" />
+            </div>
+            <div class="field">
+              <label for="ko-nll">NLL mm</label>
+              <input id="ko-nll" type="number" step="any" value="300" />
+            </div>
+            <div class="field">
+              <label for="ko-lll">LLL mm</label>
+              <input id="ko-lll" type="number" step="any" value="200" />
+            </div>
+            <div class="field">
+              <label for="ko-llll">LLLL mm</label>
+              <input id="ko-llll" type="number" step="any" value="150" />
+            </div>
+            <div class="field">
+              <label for="ko-tsump">Waktu minimum LLL → NLL (sump check) menit</label>
+              <input id="ko-tsump" type="number" step="any" value="2" />
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button class="calc-btn" type="button" id="ko-btn">Hitung Flare KO Drum</button>
+          </div>
+          <div class="calc-error" id="ko-error" hidden></div>
+          <div class="calc-result" id="ko-result" hidden>
+            <div class="big" id="ko-big"></div>
+            <dl id="ko-dl"></dl>
+            <p class="note" id="ko-note"></p>
+          </div>
+          <p class="note">Sumber: file Flare_KO_Drum_Calculation__1.xlsx (GPSA 14th Ed. Sec. 7; korelasi K York / GPSA dalam ft/s, dikonversi × 0,3048). Dua catatan dari cross-check file: (1) viskositas 0,23 cP yang dipakai untuk Vt droplet tampaknya viskositas cairan — kalau pakai viskositas uap (~0,015 cP), Vt naik sekitar 8× dan rezim berubah ke Newton, tapi diameter hasil desain tetap 650 mm karena Souders–Brown yang menentukan; (2) volume head di file memakai pendekatan yang hasilnya lebih kecil dari rumus baku geometri elipsoid — kalkulator ini memakai rumus baku, jadi volume level dan waktu tinggal bisa selisih sekitar 13% dari file, tanpa mengubah verdict. Hasil untuk belajar / estimasi awal — bukan untuk desain pabrik atau keputusan keselamatan.</p>
+        </article>
+
+        <!-- 9. Separator Vertikal (2 Fasa) -->
+        <article class="calc-panel" id="panel-vertsep" hidden>
+          <h3>Separator Vertikal (2 Fasa)</h3>
+          <span class="calc-formula">Uv,max = K · DF · √((ρL − ρV) / ρV) &nbsp;·&nbsp; D = √(4 · A / π) &nbsp;·&nbsp; Tinggi level = waktu holdup × laju cairan / luas bejana</span>
+          <p class="calc-desc">Sizing separator vertikal dua fasa, basis GPSA Engineering Data Book 14th Ed. Sec. 7 (Souders–Brown): diameter ditentukan dari luas uap yang dibutuhkan, tinggi T/T disusun dari tinggi holdup cairan (waktu tinggal tiap pita level) ditambah jarak bebas HHLL–inlet, tinggi nozzle inlet, jarak inlet–internal, demister, dan jarak internal ke top T/L. Mode DESIGN membulatkan diameter ke kelipatan 25 mm dan T/T ke kelipatan 50 mm; mode RATING mengecek diameter, T/T, dan tinggi level yang sudah ada. Nilai awal di bawah ini adalah CASE 1 yang sudah terverifikasi di file: D = 600 mm, T/T = 2350 mm, L/D = 3,92.</p>
+          <div class="calc-grid">
+            <div class="field">
+              <label for="vs-p">Tekanan inlet kPa(g)</label>
+              <input id="vs-p" type="number" step="any" value="1000" />
+            </div>
+            <div class="field">
+              <label for="vs-mv">Laju massa uap (ṁv) kg/jam</label>
+              <input id="vs-mv" type="number" step="any" value="10000" />
+            </div>
+            <div class="field">
+              <label for="vs-rhov">Densitas uap (ρv) kg/m³</label>
+              <input id="vs-rhov" type="number" step="any" value="20" />
+            </div>
+            <div class="field">
+              <label for="vs-ml">Laju massa cairan (ṁL) kg/jam</label>
+              <input id="vs-ml" type="number" step="any" value="1500" />
+            </div>
+            <div class="field">
+              <label for="vs-rhol">Densitas cairan (ρL) kg/m³</label>
+              <input id="vs-rhol" type="number" step="any" value="736" />
+            </div>
+            <div class="field">
+              <label for="vs-mode">Mode perhitungan</label>
+              <select id="vs-mode">
+                <option value="DESIGN" selected>DESIGN — cari diameter &amp; T/T</option>
+                <option value="RATING">RATING — cek ukuran yang ada</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="vs-kmethod">Metode faktor K</label>
+              <select id="vs-kmethod">
+                <option value="york" selected>York</option>
+                <option value="gpsa">GPSA</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="vs-demister">Demister terpasang?</label>
+              <select id="vs-demister">
+                <option value="YES" selected>YA</option>
+                <option value="NO">TIDAK (K × 0,5)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="vs-service">Service</label>
+              <select id="vs-service">
+                <option value="none" selected>None (faktor 1)</option>
+                <option value="glycol">Glycol / Amine (faktor 0,6)</option>
+                <option value="compressor">Compressor (faktor 0,7)</option>
+                <option value="vacuum">Vacuum (K = 0,2 ft/s)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="vs-df">Faktor derating (DF)</label>
+              <input id="vs-df" type="number" step="any" value="0.9" />
+            </div>
+            <div class="field">
+              <label for="vs-dover">RATING: diameter override mm <span class="hint">kosong = pakai hasil DESIGN</span></label>
+              <input id="vs-dover" type="number" step="any" value="" />
+            </div>
+            <div class="field">
+              <label for="vs-ttover">RATING: T/T override mm <span class="hint">kosong = pakai minimum T/T</span></label>
+              <input id="vs-ttover" type="number" step="any" value="" />
+            </div>
+            <div class="field">
+              <label for="vs-demt">Tebal demister mm <span class="hint">dipakai kalau demister YA</span></label>
+              <input id="vs-demt" type="number" step="any" value="150" />
+            </div>
+            <div class="field">
+              <label for="vs-top">Jarak internal ke top T/L mm</label>
+              <input id="vs-top" type="number" step="any" value="150" />
+            </div>
+          </div>
+          <h3 style="font-size:1.35rem;margin-top:34px;">Waktu holdup &amp; celah level</h3>
+          <p class="calc-desc">Tinggi minimum tiap pita level = waktu holdup × laju cairan ÷ luas bejana, dibulatkan ke atas (mm) dan tidak kurang dari celah level minimum. NLL berada di tengah pita LLL–HLL, jadi tinggi NLL → HLL dan LLL → NLL memakai setengah waktu LAL → LAH.</p>
+          <div class="calc-grid">
+            <div class="field">
+              <label for="vs-t1">Waktu holdup LAH → LAHH menit</label>
+              <input id="vs-t1" type="number" step="any" value="1" />
+            </div>
+            <div class="field">
+              <label for="vs-t2">Waktu holdup LAL → LAH menit</label>
+              <input id="vs-t2" type="number" step="any" value="3" />
+            </div>
+            <div class="field">
+              <label for="vs-t3">Waktu holdup LALL → LAL menit</label>
+              <input id="vs-t3" type="number" step="any" value="1" />
+            </div>
+            <div class="field">
+              <label for="vs-t4">Waktu holdup BTV → LALL menit</label>
+              <input id="vs-t4" type="number" step="any" value="2" />
+            </div>
+            <div class="field">
+              <label for="vs-gap">Celah level minimum mm</label>
+              <input id="vs-gap" type="number" step="any" value="150" />
+            </div>
+          </div>
+          <h3 style="font-size:1.35rem;margin-top:34px;">Tinggi level yang dipakai (specified)</h3>
+          <p class="calc-desc">Tinggi tiap pita level yang dipakai harus ≥ tinggi minimum hasil hitung di atas — kalau kurang, kalkulator akan menandainya NOT OK.</p>
+          <div class="calc-grid">
+            <div class="field">
+              <label for="vs-h1">Tinggi HLL → HHLL mm</label>
+              <input id="vs-h1" type="number" step="any" value="150" />
+            </div>
+            <div class="field">
+              <label for="vs-h2">Tinggi NLL → HLL mm</label>
+              <input id="vs-h2" type="number" step="any" value="200" />
+            </div>
+            <div class="field">
+              <label for="vs-h3">Tinggi LLL → NLL mm</label>
+              <input id="vs-h3" type="number" step="any" value="200" />
+            </div>
+            <div class="field">
+              <label for="vs-h4">Tinggi LLLL → LLL mm</label>
+              <input id="vs-h4" type="number" step="any" value="150" />
+            </div>
+            <div class="field">
+              <label for="vs-h5">Tinggi BTV → LLLL mm</label>
+              <input id="vs-h5" type="number" step="any" value="250" />
+            </div>
+          </div>
+          <h3 style="font-size:1.35rem;margin-top:34px;">Nozzle — ND yang dipakai</h3>
+          <p class="calc-desc">ND dianggap sama dengan ID (tebal dinding diabaikan, seperti di file). Batas momentum: inlet 1500 kg/m·s² (3750 untuk half-open pipe), vapour outlet 5400 kg/m·s²; liquid outlet dibatasi kecepatan 1 m/s. Tinggi nozzle inlet = ND inlet × 25,4 mm.</p>
+          <div class="calc-grid">
+            <div class="field">
+              <label for="vs-indev">Inlet device</label>
+              <select id="vs-indev">
+                <option value="halfopen" selected>Half-Open Pipe (batas 3750)</option>
+                <option value="other">Lainnya (batas 1500)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="vs-nd-in">Inlet — ND inch</label>
+              <input id="vs-nd-in" type="number" step="any" value="6" />
+            </div>
+            <div class="field">
+              <label for="vs-nd-v">Vapour outlet — ND inch</label>
+              <input id="vs-nd-v" type="number" step="any" value="6" />
+            </div>
+            <div class="field">
+              <label for="vs-nd-l">Liquid outlet — ND inch</label>
+              <input id="vs-nd-l" type="number" step="any" value="2" />
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button class="calc-btn" type="button" id="vs-btn">Hitung Separator Vertikal</button>
+          </div>
+          <div class="calc-error" id="vs-error" hidden></div>
+          <div class="calc-result" id="vs-result" hidden>
+            <div class="big" id="vs-big"></div>
+            <dl id="vs-dl"></dl>
+            <p class="note" id="vs-note"></p>
+          </div>
+          <p class="note">Sumber: file Vertical_Separator_Template_v1.xlsx, sheet CASE 1 (GPSA 14th Ed. Sec. 7; korelasi K York / GPSA dalam ft/s, dikonversi × 0,3048). Catatan dari cross-check: batas momentum nozzle di file ini (inlet half-open 3750, vapour outlet 5400) berbeda dengan file Flare KO Drum (inlet 2250, vapour outlet 3750) — masing-masing dipakai apa adanya sesuai filenya, konfirmasi ke spek proyek bila ragu. Hasil untuk belajar / estimasi awal — bukan untuk desain pabrik atau keputusan keselamatan.</p>
+        </article>
+
       </div>
     </section>
 
@@ -1613,6 +1926,324 @@
       $('ls-note').textContent = (r.warn ? r.warn + ' ' : '') +
         'ΔP total = ΔP gesek & fitting + head statis + perubahan velocity head. ' +
         'Sebagai pembanding, sheet proyek “Hydraulic Calculation” (Timas–Balongan) memakai batas 0,352 bar/100 m untuk dP/100 m — itu kriteria proyek tersebut, bukan batas universal.';
+      res.hidden = false;
+    });
+    /* ---------- 8. Flare KO Drum (Horizontal) ---------- */
+    /* Souders-Brown (GPSA Sec. 7) + droplet settling. Pure calculation — same formulas as the spreadsheet. */
+    function sbKYork(Ppsia) {
+      if (Ppsia < 15) return 0.1821 + 0.0029 * Ppsia + 0.046 * Math.log(Ppsia);
+      if (Ppsia < 40) return 0.35;
+      return 0.43 - 0.023 * Math.log(Ppsia);
+    }
+    function sbKGpsa(Ppsia) { return 0.35 - 0.0001 * (Ppsia - 100); }
+    /* Luas segmen lingkaran (m2), R dan h dalam meter — cairan dari bawah bejana. */
+    function segArea(R, h) {
+      if (h <= 0) return 0;
+      if (h >= 2 * R) return Math.PI * R * R;
+      return R * R * Math.acos((R - h) / R) - (R - h) * Math.sqrt(Math.max(0, 2 * R * h - h * h));
+    }
+    /* Volume SATU head (m3) terisi sampai kedalaman h — rumus baku geometri.
+       Ellipsoidal 2:1: V = pi*(D*h^2 - 4*h^3/3) untuk h <= D/4, penuh pi*D^3/24.
+       Hemispherical: V = pi*h^2*(R - h/3), penuh (2/3)*pi*R^3. Flat: 0. */
+    function headVolOne(type, D, h) {
+      if (h <= 0 || type === 'flat') return 0;
+      if (type === 'hemi') {
+        var R = D / 2;
+        if (h >= R) return 2 / 3 * Math.PI * R * R * R;
+        return Math.PI * h * h * (R - h / 3);
+      }
+      if (h >= D / 4) return Math.PI * D * D * D / 24;
+      return Math.PI * (D * h * h - 4 * h * h * h / 3);
+    }
+    function nozMinID(Qm3s, vmax) { return Math.sqrt(4 * Qm3s / (Math.PI * vmax)) / 0.0254; }
+    function nozVel(Qm3s, ndIn) { return Qm3s / (Math.PI * Math.pow(ndIn * 0.0254, 2) / 4); }
+    function koCalc(o) {
+      var Ppsia = o.p / 6.89476 + 14.696;
+      var Qvh = o.mv / o.rhov; /* m3/h */
+      var QLh = o.ml / o.rhol; /* m3/h */
+      var Qth = Qvh + QLh;
+      var rhomix = (o.mv + o.ml) / Qth;
+      var Kft = o.kmethod === 'gpsa' ? sbKGpsa(Ppsia) : sbKYork(Ppsia);
+      var K = Kft * 0.3048 * (o.demister ? 1 : 0.5);
+      var Vmax = K * o.df * Math.sqrt((o.rhol - o.rhov) / o.rhov);
+      var Amin = (Qvh / 3600) / Vmax;
+      var dp = o.dp / 1e6; /* m */
+      var mu = o.muCp / 1000; /* Pa s */
+      var K1 = dp * Math.pow((o.rhol - o.rhov) * o.rhov * 9.81, 1 / 3) / mu;
+      var regime = K1 < 3.3 ? 'Stokes' : (K1 < 43.6 ? 'Intermediate' : 'Newton');
+      var Vt;
+      if (regime === 'Stokes') Vt = (o.rhol - o.rhov) * 9.81 * dp * dp / (18 * mu);
+      else if (regime === 'Intermediate') Vt = 0.153 * Math.pow(9.81, 0.714) * Math.pow(dp, 1.14) * Math.pow(o.rhol - o.rhov, 0.714) / (Math.pow(mu, 0.428) * Math.pow(o.rhov, 0.286));
+      else Vt = Math.sqrt(3.03 * 9.81 * dp * (o.rhol - o.rhov) / o.rhov);
+      /* DESIGN search: D 300-3000 mm kelipatan 50, pertama yang lolos S-B dan Vt. */
+      var foundD = null, foundL = null;
+      for (var Dmm = 300; Dmm <= 3000; Dmm += 50) {
+        if (o.hhll >= Dmm) continue;
+        var R = Dmm / 2000;
+        var Avap = Math.PI * R * R - segArea(R, o.hhll / 1000);
+        if (Avap < Amin) continue;
+        var L = Math.ceil(o.ld * Dmm / 50) * 50;
+        var Leff = L - o.incl - o.outcl;
+        if (Leff <= 0) continue;
+        var Vact = (Qvh / 3600) / Avap;
+        var VmaxVt = Vt * Leff / (Dmm - o.hhll);
+        if (Vact <= VmaxVt) { foundD = Dmm; foundL = L; break; }
+      }
+      var Dused = (o.mode === 'DESIGN' && foundD !== null) ? foundD : o.drate;
+      var Lused = (o.mode === 'DESIGN' && foundD !== null) ? foundL : o.lrate;
+      var Rr = Dused / 2000;
+      var Leff = Lused - o.incl - o.outcl;
+      var fill = segArea(Rr, o.hhll / 1000) / (Math.PI * Rr * Rr);
+      var Aact = (1 - fill) * Math.PI * Math.pow(Dused / 1000, 2) / 4;
+      var Vact = (Qvh / 3600) / Aact;
+      var VmaxVt = (Dused - o.hhll) > 0 ? Vt * Leff / (Dused - o.hhll) : 0;
+      /* Nozzle */
+      var limIn = o.indev === 'halfopen' ? 2250 : 1500;
+      var vinMax = Math.sqrt(limIn / rhomix);
+      var voutMax = Math.sqrt(3750 / o.rhov);
+      var idIn = nozMinID(Qth / 3600, vinMax);
+      var idV = nozMinID(Qvh / 3600, voutMax);
+      var idL = nozMinID(QLh / 3600, 1);
+      var vin = nozVel(Qth / 3600, o.ndIn);
+      var vout = nozVel(Qvh / 3600, o.ndV);
+      var vl = nozVel(QLh / 3600, o.ndL);
+      var momIn = rhomix * vin * vin;
+      var momOut = o.rhov * vout * vout;
+      /* Level volumes: silinder (T/T) + kedua head. */
+      function volAt(hmm) {
+        return (Lused / 1000) * segArea(Rr, hmm / 1000) + 2 * headVolOne(o.head, Dused / 1000, hmm / 1000);
+      }
+      var vHHLL = volAt(o.hhll), vHLL = volAt(o.hll), vNLL = volAt(o.nll), vLLL = volAt(o.lll), vLLLL = volAt(o.llll);
+      function resTime(cv) { return QLh > 0 ? cv / (QLh / 60) : NaN; }
+      var cvHHLL = vHHLL - vHLL, cvHLL = vHLL - vNLL, cvNLL = vNLL - vLLL, cvLLL = vLLL - vLLLL;
+      var rtHHLL = resTime(cvHHLL), rtHLL = resTime(cvHLL), rtNLL = resTime(cvNLL), rtLLL = resTime(cvLLL);
+      return { Ppsia: Ppsia, Qvh: Qvh, QLh: QLh, Qth: Qth, rhomix: rhomix,
+        Kft: Kft, K: K, Vmax: Vmax, Amin: Amin, K1: K1, regime: regime, Vt: Vt,
+        foundD: foundD, foundL: foundL, Dused: Dused, Lused: Lused, Leff: Leff,
+        fill: fill, Aact: Aact, Vact: Vact, VmaxVt: VmaxVt,
+        sbOK: Aact >= Amin, vtOK: Vact <= VmaxVt,
+        ldOK: (Lused / Dused) >= 3 && (Lused / Dused) <= 5,
+        leffOK: Leff / Dused >= 1,
+        limIn: limIn, vinMax: vinMax, voutMax: voutMax,
+        idIn: idIn, idV: idV, idL: idL,
+        vin: vin, vout: vout, vl: vl, momIn: momIn, momOut: momOut,
+        vHHLL: vHHLL, vHLL: vHLL, vNLL: vNLL, vLLL: vLLL, vLLLL: vLLLL,
+        cvHHLL: cvHHLL, cvHLL: cvHLL, cvNLL: cvNLL, cvLLL: cvLLL,
+        rtHHLL: rtHHLL, rtHLL: rtHLL, rtNLL: rtNLL, rtLLL: rtLLL,
+        sumpOK: isNaN(rtNLL) ? true : rtNLL >= o.tsump };
+    }
+    $('ko-btn').addEventListener('click', function () {
+      var err = $('ko-error'), res = $('ko-result');
+      showError(err, ''); res.hidden = true;
+      var o = {
+        p: num($('ko-p')), mv: num($('ko-mv')), rhov: num($('ko-rhov')),
+        ml: num($('ko-ml')), rhol: num($('ko-rhol')), muCp: num($('ko-mu')),
+        mode: $('ko-mode').value, ld: num($('ko-ld')),
+        drate: num($('ko-drate')), lrate: num($('ko-lrate')), hhll: num($('ko-hhll')),
+        kmethod: $('ko-kmethod').value, demister: $('ko-demister').value === 'YES',
+        df: num($('ko-df')), dp: num($('ko-dp')), head: $('ko-head').value,
+        incl: num($('ko-incl')), outcl: num($('ko-outcl')), indev: $('ko-indev').value,
+        ndIn: num($('ko-nd-in')), ndV: num($('ko-nd-v')), ndL: num($('ko-nd-l')),
+        hll: num($('ko-hll')), nll: num($('ko-nll')), lll: num($('ko-lll')),
+        llll: num($('ko-llll')), tsump: num($('ko-tsump'))
+      };
+      var bad = [o.p, o.mv, o.rhov, o.ml, o.rhol, o.muCp, o.ld, o.drate, o.lrate, o.hhll,
+        o.df, o.dp, o.incl, o.outcl, o.ndIn, o.ndV, o.ndL,
+        o.hll, o.nll, o.lll, o.llll, o.tsump].some(isNaN);
+      if (bad || o.p <= 0 || o.mv <= 0 || o.rhov <= 0 || o.ml < 0 || o.rhol <= 0 || o.muCp <= 0 ||
+        o.ld <= 0 || o.drate <= 0 || o.lrate <= 0 || o.hhll <= 0 || o.df <= 0 || o.dp <= 0 ||
+        o.incl < 0 || o.outcl < 0 || o.ndIn <= 0 || o.ndV <= 0 || o.ndL <= 0 || o.tsump <= 0) {
+        showError(err, 'Lengkapi semua kolom dengan angka valid — laju alir, densitas, viskositas, diameter, dan panjang harus lebih besar dari nol (laju cairan boleh 0).'); return;
+      }
+      if (!(o.hhll > o.hll && o.hll > o.nll && o.nll > o.lll && o.lll > o.llll && o.llll > 0)) {
+        showError(err, 'Urutan level harus HHLL > HLL > NLL > LLL > LLLL > 0 (diukur dari BOV).'); return;
+      }
+      if (o.mode === 'RATING' && o.hhll >= o.drate) {
+        showError(err, 'HHLL harus lebih kecil dari diameter bejana — kalau tidak, tidak ada ruang uap sama sekali.'); return;
+      }
+      var r = koCalc(o);
+      var verdict = (r.sbOK ? 'Souders–Brown OK' : 'Souders–Brown TIDAK LOLOS') + ' · ' + (r.vtOK ? 'Vt OK' : 'Vt TIDAK LOLOS');
+      $('ko-big').textContent = 'D = ' + fmt(r.Dused, 4) + ' mm · L = ' + fmt(r.Lused, 4) + ' mm · L/D = ' + fmt(r.Lused / r.Dused, 4) + ' — ' + verdict;
+      var pairs = [
+        ['Tekanan absolut', fmt(r.Ppsia, 5) + ' psia'],
+        ['Laju volume uap (Qv)', fmt(r.Qvh, 5) + ' m³/jam'],
+        ['Laju volume cairan (QL)', fmt(r.QLh, 5) + ' m³/jam'],
+        ['Densitas campuran', fmt(r.rhomix, 5) + ' kg/m³'],
+        ['Faktor K (' + (o.kmethod === 'gpsa' ? 'GPSA' : 'York') + ')', fmt(r.Kft, 5) + ' ft/s = ' + fmt(r.K, 5) + ' m/s'],
+        ['Vmax (Souders–Brown)', fmt(r.Vmax, 5) + ' m/s'],
+        ['Luas uap minimum', fmt(r.Amin, 5) + ' m²'],
+        ['D minimum (pencarian DESIGN)', r.foundD === null ? 'tidak ada solusi ≤ 3000 mm' : fmt(r.foundD, 4) + ' mm'],
+        ['Diameter dipakai (D)', fmt(r.Dused, 4) + ' mm'],
+        ['Panjang T/T dipakai (L)', fmt(r.Lused, 4) + ' mm'],
+        ['L/D', fmt(r.Lused / r.Dused, 4) + (r.ldOK ? ' — OK (3–5)' : ' — OUT OF RANGE (3–5)')],
+        ['Panjang efektif (Leff)', fmt(r.Leff, 4) + ' mm · Leff/D = ' + fmt(r.Leff / r.Dused, 4) + (r.leffOK ? ' — OK (≥ 1)' : ' — Leff/D < 1, REVIEW')],
+        ['Fraksi isi cairan @ HHLL', fmt(r.fill, 5)],
+        ['Luas uap aktual @ HHLL', fmt(r.Aact, 5) + ' m² — ' + (r.sbOK ? 'OK' : 'INCREASE D / LOWER HHLL')],
+        ['Kecepatan uap aktual', fmt(r.Vact, 5) + ' m/s'],
+        ['Rezim droplet (K1 = ' + fmt(r.K1, 4) + ')', r.regime],
+        ['Kecepatan terminal droplet (Vt)', fmt(r.Vt, 5) + ' m/s'],
+        ['Kecepatan uap maks (basis Vt)', fmt(r.VmaxVt, 5) + ' m/s — ' + (r.vtOK ? 'OK' : 'EXCEEDS Vt MAX')],
+        ['Min ID nozzle inlet', fmt(r.idIn, 4) + ' inch (batas ρv² ' + fmt(r.limIn, 4) + ')'],
+        ['Min ID nozzle vapour outlet', fmt(r.idV, 4) + ' inch (batas ρv² 3750)'],
+        ['Min ID nozzle liquid outlet', fmt(r.idL, 4) + ' inch (batas v 1 m/s)'],
+        ['Inlet: v terhitung / ρv²', fmt(r.vin, 4) + ' m/s / ' + fmt(r.momIn, 4) + ' kg/m·s² — ' + (r.momIn <= r.limIn ? 'OK' : 'RESIZE')],
+        ['Vapour outlet: v terhitung / ρv²', fmt(r.vout, 4) + ' m/s / ' + fmt(r.momOut, 4) + ' kg/m·s² — ' + (r.momOut <= 3750 ? 'OK' : 'RESIZE')],
+        ['Liquid outlet: v terhitung', fmt(r.vl, 4) + ' m/s — ' + (r.vl <= 1 ? 'OK' : 'RESIZE')],
+        ['Volume cairan @ HHLL', fmt(r.vHHLL, 5) + ' m³'],
+        ['Volume cairan @ HLL', fmt(r.vHLL, 5) + ' m³'],
+        ['Volume cairan @ NLL', fmt(r.vNLL, 5) + ' m³'],
+        ['Volume cairan @ LLL', fmt(r.vLLL, 5) + ' m³'],
+        ['Volume cairan @ LLLL', fmt(r.vLLLL, 5) + ' m³'],
+        ['Waktu tinggal HLL → HHLL', fmt(r.rtHHLL, 5) + ' menit'],
+        ['Waktu tinggal NLL → HLL', fmt(r.rtHLL, 5) + ' menit'],
+        ['Waktu tinggal LLL → NLL', fmt(r.rtNLL, 5) + ' menit'],
+        ['Waktu tinggal LLLL → LLL', fmt(r.rtLLL, 5) + ' menit'],
+        ['Sump check (LLL → NLL ≥ ' + fmt(o.tsump, 4) + ' menit)', r.sumpOK ? 'OK' : 'INCREASE LLL HEIGHT']
+      ];
+      fillDl($('ko-dl'), pairs);
+      var note = '';
+      if (o.mode === 'DESIGN' && r.foundD === null) note += 'Tidak ada diameter ≤ 3000 mm yang lolos kedua kriteria pada target L/D ini — coba turunkan HHLL, naikkan target L/D, atau pakai mode RATING. ';
+      if (r.rtNLL > 1000) note += 'Waktu tinggal sangat besar karena laju cairan sangat kecil — sump check lolos dengan margin besar. ';
+      note += 'Viskositas ' + fmt(o.muCp, 4) + ' cP dipakai apa adanya dari file; kalau itu viskositas cairan, Vt di sini konservatif (lebih kecil dari Vt dengan viskositas uap). ' +
+        'Volume head memakai rumus baku geometri elipsoid/hemisfer — selisih sekitar 13% dari file pada volume kontrol antar level.';
+      $('ko-note').textContent = note;
+      res.hidden = false;
+    });
+
+    /* ---------- 9. Separator Vertikal (2 Fasa) ---------- */
+    /* Souders-Brown (GPSA Sec. 7) + tinggi holdup. Pure calculation — same formulas as CASE 1. */
+    function vsCalc(o) {
+      var Ppsia = o.p / 6.89476 + 14.696;
+      var Qvh = o.mv / o.rhov; /* m3/h */
+      var QLh = o.ml / o.rhol; /* m3/h */
+      var Qth = Qvh + QLh;
+      var rhomix = (o.mv + o.ml) / Qth;
+      var KftBase = o.kmethod === 'gpsa' ? sbKGpsa(Ppsia) : sbKYork(Ppsia);
+      var svcF = o.service === 'glycol' ? 0.6 : (o.service === 'compressor' ? 0.7 : 1);
+      var Kft = o.service === 'vacuum' ? 0.2 : KftBase * svcF;
+      var K = Kft * 0.3048 * (o.demister ? 1 : 0.5);
+      var Vmax = K * o.df * Math.sqrt((o.rhol - o.rhov) / o.rhov);
+      var Areq = (Qvh / 3600) / Vmax;
+      var Dreq = Math.sqrt(4 * Areq / Math.PI) * 1000;
+      var Dused = (o.dover > 0) ? o.dover : Math.ceil(Dreq / 25) * 25;
+      var CSA = Math.PI * Math.pow(Dused / 1000, 2) / 4;
+      var Vact = (Qvh / 3600) / CSA;
+      var ratio = Vact / Vmax;
+      function hCalc(tMin) { return Math.max(o.gap, Math.ceil(tMin * 60 * (QLh / 3600) / CSA * 1000)); }
+      var hc1 = hCalc(o.t1), hc2 = hCalc(o.t2 / 2), hc3 = hCalc(o.t2 / 2), hc4 = hCalc(o.t3), hc5 = hCalc(o.t4);
+      function actTime(hmm) { return QLh > 0 ? (hmm / 1000 * CSA / (QLh / 3600) / 60) : NaN; }
+      var at1 = actTime(o.h1), at2 = actTime(o.h2), at3 = actTime(o.h3), at4 = actTime(o.h4), at5 = actTime(o.h5);
+      var Hliq = o.h1 + o.h2 + o.h3 + o.h4 + o.h5;
+      var Hhi = Math.max(0.25 * Dused, 600);
+      var Hnoz = o.ndIn * 25.4;
+      var Hii = Math.min(0.5 * Dused, 600);
+      var Hdem = o.demister ? o.demt : 0;
+      var TTmin = Hliq + Hhi + Hnoz + Hii + Hdem + o.top;
+      var TTused = (o.ttover > 0) ? o.ttover : Math.ceil(TTmin / 50) * 50;
+      var limIn = o.indev === 'halfopen' ? 3750 : 1500;
+      var vinMax = Math.sqrt(limIn / rhomix);
+      var voutMax = Math.sqrt(5400 / o.rhov);
+      var idIn = nozMinID(Qth / 3600, vinMax);
+      var idV = nozMinID(Qvh / 3600, voutMax);
+      var idL = nozMinID(QLh / 3600, 1);
+      var vin = nozVel(Qth / 3600, o.ndIn);
+      var vout = nozVel(Qvh / 3600, o.ndV);
+      var vl = nozVel(QLh / 3600, o.ndL);
+      var momIn = rhomix * vin * vin;
+      var momOut = o.rhov * vout * vout;
+      return { Ppsia: Ppsia, Qvh: Qvh, QLh: QLh, Qth: Qth, rhomix: rhomix,
+        KftBase: KftBase, svcF: svcF, Kft: Kft, K: K, Vmax: Vmax, Areq: Areq, Dreq: Dreq,
+        Dused: Dused, CSA: CSA, Vact: Vact, ratio: ratio,
+        hc1: hc1, hc2: hc2, hc3: hc3, hc4: hc4, hc5: hc5,
+        at1: at1, at2: at2, at3: at3, at4: at4, at5: at5,
+        Hliq: Hliq, Hhi: Hhi, Hnoz: Hnoz, Hii: Hii, Hdem: Hdem, TTmin: TTmin, TTused: TTused,
+        limIn: limIn, vinMax: vinMax, voutMax: voutMax,
+        idIn: idIn, idV: idV, idL: idL,
+        vin: vin, vout: vout, vl: vl, momIn: momIn, momOut: momOut };
+    }
+    $('vs-btn').addEventListener('click', function () {
+      var err = $('vs-error'), res = $('vs-result');
+      showError(err, ''); res.hidden = true;
+      var o = {
+        p: num($('vs-p')), mv: num($('vs-mv')), rhov: num($('vs-rhov')),
+        ml: num($('vs-ml')), rhol: num($('vs-rhol')),
+        mode: $('vs-mode').value, kmethod: $('vs-kmethod').value,
+        demister: $('vs-demister').value === 'YES', service: $('vs-service').value,
+        df: num($('vs-df')),
+        dover: num($('vs-dover')), ttover: num($('vs-ttover')),
+        demt: num($('vs-demt')), top: num($('vs-top')),
+        t1: num($('vs-t1')), t2: num($('vs-t2')), t3: num($('vs-t3')), t4: num($('vs-t4')),
+        gap: num($('vs-gap')),
+        h1: num($('vs-h1')), h2: num($('vs-h2')), h3: num($('vs-h3')), h4: num($('vs-h4')), h5: num($('vs-h5')),
+        indev: $('vs-indev').value,
+        ndIn: num($('vs-nd-in')), ndV: num($('vs-nd-v')), ndL: num($('vs-nd-l'))
+      };
+      /* Override kosong (NaN) = pakai hasil DESIGN. */
+      if (isNaN(o.dover)) o.dover = 0;
+      if (isNaN(o.ttover)) o.ttover = 0;
+      var bad = [o.p, o.mv, o.rhov, o.ml, o.rhol, o.df, o.demt, o.top,
+        o.t1, o.t2, o.t3, o.t4, o.gap,
+        o.h1, o.h2, o.h3, o.h4, o.h5, o.ndIn, o.ndV, o.ndL].some(isNaN);
+      if (bad || o.p <= 0 || o.mv <= 0 || o.rhov <= 0 || o.ml < 0 || o.rhol <= 0 || o.df <= 0 ||
+        o.demt < 0 || o.top < 0 || o.t1 <= 0 || o.t2 <= 0 || o.t3 <= 0 || o.t4 <= 0 || o.gap <= 0 ||
+        o.h1 <= 0 || o.h2 <= 0 || o.h3 <= 0 || o.h4 <= 0 || o.h5 <= 0 ||
+        o.ndIn <= 0 || o.ndV <= 0 || o.ndL <= 0 || o.dover < 0 || o.ttover < 0) {
+        showError(err, 'Lengkapi semua kolom dengan angka valid — laju alir, densitas, waktu holdup, dan tinggi level harus lebih besar dari nol (laju cairan boleh 0; override boleh kosong).'); return;
+      }
+      var r = vsCalc(o);
+      var dOK = r.Dused >= r.Dreq;
+      var vOK = r.ratio <= 1;
+      var ttOK = r.TTused >= r.TTmin;
+      var ldOK = (r.TTused / r.Dused) >= 2.5 && (r.TTused / r.Dused) <= 5;
+      var mainVerdict = o.mode === 'DESIGN'
+        ? (dOK ? 'OK' : 'INCREASE D')
+        : (vOK ? 'OK (V/Vmax ≤ 1)' : 'OVERLOADED');
+      $('vs-big').textContent = 'D = ' + fmt(r.Dused, 4) + ' mm · T/T = ' + fmt(r.TTused, 4) + ' mm · L/D = ' + fmt(r.TTused / r.Dused, 4) + ' — ' + mainVerdict;
+      function lvlRow(nama, hitung, pakai, aktual) {
+        return [nama, 'min ' + fmt(hitung, 4) + ' mm · dipakai ' + fmt(pakai, 4) + ' mm · ' + fmt(aktual, 4) + ' menit — ' + (pakai >= hitung ? 'OK' : 'NOT OK')];
+      }
+      var pairs = [
+        ['Tekanan absolut', fmt(r.Ppsia, 5) + ' psia'],
+        ['Laju volume uap (Qv)', fmt(r.Qvh, 5) + ' m³/jam'],
+        ['Laju volume cairan (QL)', fmt(r.QLh, 5) + ' m³/jam'],
+        ['Densitas campuran', fmt(r.rhomix, 5) + ' kg/m³'],
+        ['Faktor K (' + (o.kmethod === 'gpsa' ? 'GPSA' : 'York') + ')', fmt(r.KftBase, 5) + ' ft/s'],
+        ['Faktor service', o.service === 'vacuum' ? 'Vacuum — K = 0,2 ft/s' : '× ' + fmt(r.svcF, 4)],
+        ['Faktor K final', fmt(r.Kft, 5) + ' ft/s = ' + fmt(r.K, 5) + ' m/s'],
+        ['Vmax (Souders–Brown)', fmt(r.Vmax, 5) + ' m/s'],
+        ['Luas uap dibutuhkan', fmt(r.Areq, 5) + ' m²'],
+        ['Diameter untuk uap', fmt(r.Dreq, 4) + ' mm'],
+        ['Diameter dipakai (D)', fmt(r.Dused, 4) + ' mm — ' + (dOK ? 'OK' : 'INCREASE D')],
+        ['Luas penampang bejana', fmt(r.CSA, 5) + ' m²'],
+        ['Kecepatan uap aktual', fmt(r.Vact, 5) + ' m/s'],
+        ['V / Vmax', fmt(r.ratio, 5) + (o.mode === 'RATING' ? (vOK ? ' — OK' : ' — OVERLOADED') : '')],
+        lvlRow('Tinggi HLL → HHLL', r.hc1, o.h1, r.at1),
+        lvlRow('Tinggi NLL → HLL', r.hc2, o.h2, r.at2),
+        lvlRow('Tinggi LLL → NLL', r.hc3, o.h3, r.at3),
+        lvlRow('Tinggi LLLL → LLL', r.hc4, o.h4, r.at4),
+        lvlRow('Tinggi BTV → LLLL', r.hc5, o.h5, r.at5),
+        ['Total tinggi cairan (BTV → HHLL)', fmt(r.Hliq, 4) + ' mm'],
+        ['Jarak HHLL → inlet', fmt(r.Hhi, 4) + ' mm (maks 0,25·D; 600 mm)'],
+        ['Tinggi nozzle inlet', fmt(r.Hnoz, 4) + ' mm (= ND inlet × 25,4)'],
+        ['Jarak inlet → internal', fmt(r.Hii, 4) + ' mm (min 0,5·D; 600 mm)'],
+        ['Tebal demister', fmt(r.Hdem, 4) + ' mm'],
+        ['Jarak internal → top T/L', fmt(o.top, 4) + ' mm'],
+        ['T/T minimum', fmt(r.TTmin, 4) + ' mm'],
+        ['T/T dipakai', fmt(r.TTused, 4) + ' mm — ' + (ttOK ? 'OK' : 'T/T BELOW MINIMUM')],
+        ['L/D', fmt(r.TTused / r.Dused, 4) + (ldOK ? ' — OK (2,5–5)' : ' — L/D OUT OF RANGE (2,5–5)')],
+        ['Min ID nozzle inlet', fmt(r.idIn, 4) + ' inch (batas ρv² ' + fmt(r.limIn, 4) + ')'],
+        ['Min ID nozzle vapour outlet', fmt(r.idV, 4) + ' inch (batas ρv² 5400)'],
+        ['Min ID nozzle liquid outlet', fmt(r.idL, 4) + ' inch (batas v 1 m/s)'],
+        ['Inlet: v terhitung / ρv²', fmt(r.vin, 4) + ' m/s / ' + fmt(r.momIn, 4) + ' kg/m·s² — ' + (r.momIn <= r.limIn ? 'OK' : 'NOT OK')],
+        ['Vapour outlet: v terhitung / ρv²', fmt(r.vout, 4) + ' m/s / ' + fmt(r.momOut, 4) + ' kg/m·s² — ' + (r.momOut <= 5400 ? 'OK' : 'NOT OK')],
+        ['Liquid outlet: v terhitung', fmt(r.vl, 4) + ' m/s — ' + (r.vl <= 1 ? 'OK' : 'NOT OK')]
+      ];
+      fillDl($('vs-dl'), pairs);
+      var note = 'Jarak HHLL → inlet = maks(0,25·D; 600 mm) dan jarak inlet → internal = min(0,5·D; 600 mm), seperti di file. ';
+      if (o.mode === 'RATING' && o.dover === 0) note += 'Mode RATING tanpa diameter override memakai hasil DESIGN (dibulatkan ke 25 mm). ';
+      if (o.mode === 'RATING' && o.ttover === 0) note += 'T/T tanpa override memakai minimum T/T (dibulatkan ke 50 mm). ';
+      note += 'Tinggi level yang dipakai harus ≥ tinggi minimum hasil hitung; NLL berada di tengah pita LLL–HLL.';
+      $('vs-note').textContent = note;
       res.hidden = false;
     });
   }());
